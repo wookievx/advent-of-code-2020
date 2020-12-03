@@ -7,9 +7,7 @@ use nom::{
     sequence::tuple};
 use nom::sequence::separated_pair;
 use nom::bytes::complete::take_while;
-use nom::character::{is_digit, is_alphabetic, is_space};
 use self::nom::sequence::preceded;
-use self::nom::number::complete::u16;
 use self::nom::bytes::complete::take;
 use self::nom::AsChar;
 
@@ -51,7 +49,7 @@ pub fn parse_input(input: Vec<String>) -> Vec<Password> {
 
 fn parse_line(input: &str) -> IResult<&str, Password> {
     let (input, (min_req, max_req)) = separated_pair(parse_number, tag("-"), parse_number)(input)?;
-    let (input, (character, content)) = preceded(take_while(|c: char| c.is_whitespace()), separated_pair(take(1usize), tag(": "), take_rest))(input)?;
+    let (_, (character, content)) = preceded(take_while(|c: char| c.is_whitespace()), separated_pair(take(1usize), tag(": "), take_rest))(input)?;
     IResult::Ok(("", Password { min_req, max_req, character: character.chars().next().unwrap(), content: content.to_string() }))
 }
 
