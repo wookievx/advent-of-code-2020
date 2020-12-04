@@ -1,9 +1,8 @@
-use nom::error::ErrorKind::MapOpt;
-
 mod utils;
 mod day1;
 mod day2;
 mod day3;
+mod day4;
 
 fn main() {
     let args1: Vec<u32> =
@@ -43,5 +42,12 @@ fn main() {
         .fold(1usize, |l, r| l * r);
 
     println!("Result of day 3 (part 2): {res}", res = res);
+
+    let day_4_contents = utils::files::resource_contents("resources/day4/input.txt");
+    let parsed_day_4 = day4::parse_input(day_4_contents.as_str());
+    let simple_day_4_res = day4::solve_simple(&parsed_day_4);
+    println!("Result of day 4: {res}", res = simple_day_4_res);
+    let advanced_day_4_res = day4::solve_advanced(&parsed_day_4);
+    println!("Result of day 4 (part 2): {res}", res = advanced_day_4_res);
     println!("Hello, world!");
 }

@@ -3,13 +3,12 @@ extern crate nom;
 use nom::{
     IResult,
     bytes::complete::tag,
-    combinator::map_res,
-    sequence::tuple};
+    combinator::map_res};
 use nom::sequence::separated_pair;
 use nom::bytes::complete::take_while;
-use self::nom::sequence::preceded;
-use self::nom::bytes::complete::take;
-use self::nom::AsChar;
+use nom::sequence::preceded;
+use nom::bytes::complete::take;
+use nom::AsChar;
 
 pub struct Password {
     min_req: u16,
