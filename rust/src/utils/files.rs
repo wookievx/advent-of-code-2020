@@ -18,6 +18,6 @@ pub fn resource_contents(filename: impl AsRef<Path>) -> String {
     let file = File::open(pref.join(filename)).expect("no such file");
     let mut buf = BufReader::new(file);
     let mut res: String = String::new();
-    buf.read_to_string(&mut res);
+    buf.read_to_string(&mut res).expect("Failed to read input");
     res
 }

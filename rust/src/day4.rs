@@ -7,20 +7,17 @@ use nom::{
 use nom::sequence::separated_pair;
 use nom::bytes::complete::take;
 use nom::bytes::complete::{is_not, is_a};
-use nom::multi::many0;
 use nom::combinator::map;
 use nom::branch::alt;
 use nom::multi::{separated_list1, many1};
 use std::collections::HashMap;
 use std::fmt;
-use nom::lib::std::fmt::Formatter;
-use nom::multi::many_m_n;
 use nom::bytes::complete::{take_while_m_n, take_while};
 use nom::sequence::preceded;
 use nom::combinator::map_res;
 use nom::error::ErrorKind;
-use self::nom::character::is_digit;
-use self::nom::number::complete::u8;
+use std::fmt::Formatter;
+use self::nom::multi::many0;
 
 #[derive(Copy, Clone, Default)]
 pub struct Passport<'a> {
@@ -92,7 +89,7 @@ fn validate_year(min_value: u16, max_value: u16, arg: &str) -> bool {
     let value = arg.parse::<u16>();
     match value {
         Ok(value) => min_value <= value && value <= max_value,
-        Err(pr) => false
+        Err(_) => false
     }
 }
 
@@ -126,7 +123,7 @@ fn parse_height(input: &str) -> IResult<&str, Height> {
 }
 
 fn validate_eye_color(input: &str) -> bool {
-    input == "amb" || input == "blu" || input == "brn" || input == "brn" || input == "brn" || input == "hzl" || input == "oth"
+    input == "amb" || input == "blu" || input == "brn" || input == "gry" || input == "grn" || input == "hzl" || input == "oth"
 }
 
 fn validate_color(input: &str) -> bool {
@@ -162,11 +159,14 @@ fn hex_color(input: &str) -> IResult<&str, Color> {
 }
 
 fn validate_pid(input: &str) -> bool {
-    parse_pid(input).is_ok()
+    match parse_pid(input) {
+        Ok((_, p)) => p.len() == 9,
+        Err(_) => false
+    }
 }
 
 fn parse_pid(input: &str) -> IResult<&str, Vec<u8>> {
-    many_m_n(9, 9, map_res(take(1usize), |s: &str| s.parse::<u8>()))(input)
+    many0(map_res(take(1usize), |s: &str| s.parse::<u8>()))(input)
 }
 
 //input parsing begins
@@ -212,5 +212,45 @@ fn from_pairs<'a>(input: Vec<(&'a str, &'a str)>) -> Passport<'a> {
         eye_color: get_tag("ecl"),
         passport_id: get_tag("pid"),
         country_id: get_tag("cid")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::day4::{validate_height, validate_color, validate_eye_color, validate_pid};
+
+    #[test]
+    fn it_should_validate_height() {
+        let min_cm: u16 = 150;
+        let max_cm: u16 = 193;
+        let min_in: u16 = 59;
+        let max_in: u16 = 76;
+        let validate_height_t = |ipt: &str| {
+            validate_height(min_cm, max_cm, min_in, max_in, ipt)
+        };
+        assert_eq!(validate_height_t("60in"), true);
+        assert_eq!(validate_height_t("190cm"), true);
+        assert_eq!(validate_height_t("190in"), false);
+        assert_eq!(validate_height_t("190"), false);
+    }
+
+    #[test]
+    fn it_should_validate_heir_color() {
+        assert_eq!(validate_color("#123abc"), true);
+        assert_eq!(validate_color("#123abz"), false);
+        assert_eq!(validate_color("123abc"), false);
+    }
+
+    #[test]
+    fn it_should_validate_eye_color() {
+        assert_eq!(validate_eye_color("brn"), true);
+        assert_eq!(validate_eye_color("gry"), true);
+        assert_eq!(validate_eye_color("wat"), false);
+    }
+
+    #[test]
+    fn it_should_validate_passport_identifier() {
+        assert_eq!(validate_pid("000000001"), true);
+        assert_eq!(validate_pid("0123456789"), false);
     }
 }
