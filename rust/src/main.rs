@@ -1,9 +1,12 @@
+use crate::utils::solutions::Input;
+
 mod utils;
 mod day1;
 mod day2;
 mod day3;
 mod day4;
 mod day5;
+mod day6_10;
 
 fn main() {
     day_1_5();
@@ -56,10 +59,9 @@ fn day_1_5() {
     println!("Result of day 4 (part 2): {res}", res = advanced_day_4_res);
 
     let day_5_contents = utils::files::lines_from_file("resources/day5/input.txt");
-    let simple_day_5_res = day5::solve(&day_5_contents);
-    let advanced_day_5_res = day5::solve_advanced(&day_5_contents);
-    println!("Result of day 5: {res}", res = simple_day_5_res);
-    println!("Result of day 5 (part 2): {res}", res = advanced_day_5_res);
+    let input = Input::new(&day_5_contents);
+    fn parse_5(arg: &Vec<String>) -> Result<&Vec<String>, ()> { Ok(arg) }
+    input.perform_solution(parse_5, day5::solve, day5::solve_advanced, "day 5");
     println!("Hello, world!");
 }
 
