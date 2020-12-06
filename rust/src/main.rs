@@ -10,6 +10,7 @@ mod day6_10;
 
 fn main() {
     day_1_5();
+    day_6_10();
 }
 
 fn day_1_5() {
@@ -60,11 +61,13 @@ fn day_1_5() {
 
     let day_5_contents = utils::files::lines_from_file("resources/day5/input.txt");
     let input = Input::new(&day_5_contents);
-    fn parse_5(arg: &Vec<String>) -> Result<&Vec<String>, ()> { Ok(arg) }
+    fn parse_5(arg: &Vec<String>) -> Result<Vec<String>, ()> { Ok(arg.clone()) }
     input.perform_solution(parse_5, day5::solve, day5::solve_advanced, "day 5");
     println!("Hello, world!");
 }
 
 fn day_6_10() {
-
+    let day_6_contents = utils::files::resource_contents("resources/day6/input.txt");
+    let input = Input::new(day_6_contents);
+    input.perform_solution(day6_10::day6::parse_input, day6_10::day6::solve_simple, |i| 0, "day 6");
 }

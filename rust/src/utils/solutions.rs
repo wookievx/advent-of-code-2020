@@ -12,17 +12,16 @@ impl <RI: Clone> Input<RI> {
         name: &str
     )  where
         F1: Fn(RI) -> Result<I, E>,
-        F2: Fn(I) -> R1,
-        F3: Fn(I) -> R2,
-        I: Clone,
+        F2: Fn(&I) -> R1,
+        F3: Fn(&I) -> R2,
         E: fmt::Debug,
         R1: Display,
         R2: Display
     {
         let parsed = parse_input(self.0.clone()).expect(format!("Failed to parse input: {}", name).as_str());
-        let res_one = solve_one(parsed.clone());
+        let res_one = solve_one(&parsed);
         println!("Result of {name}: {res}", name = name, res = res_one);
-        let res_two = solve_two(parsed.clone());
+        let res_two = solve_two(&parsed);
         println!("Result of {name} (day 2): {res}", name = name, res = res_two);
     }
 }

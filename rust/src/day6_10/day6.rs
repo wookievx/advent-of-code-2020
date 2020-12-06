@@ -5,13 +5,27 @@ use nom::bytes::complete::{tag, take_until};
 use nom::combinator::map;
 use nom::IResult;
 use nom::branch::alt;
-use self::nom::bytes::complete::take_while;
+use nom::bytes::complete::take_while;
+use std::collections::HashSet;
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct GroupInput(Vec<Vec<char>>);
 
-pub fn parse_input(input: &str) -> Result<Vec<GroupInput>, ()> {
-    match internal_parse(input) {
+pub fn solve_simple(input: &Vec<GroupInput>) -> usize {
+    let prepared: Vec<HashSet<char>> = input.iter().map(|ipt| {
+        let sets: Vec<HashSet<char>> = ipt.0.iter()
+            .map(|answear| answear.iter().cloned().collect())
+            .collect();
+        sets
+            .iter()
+            .fold(HashSet::<char>::new(), |acc, n|
+                acc.union(n).cloned().collect())
+    }).collect();
+    prepared.iter().fold(0 as usize, |acc, next| acc + next.len())
+}
+
+pub fn parse_input(input: String) -> Result<Vec<GroupInput>, ()> {
+    match internal_parse(input.as_str()) {
         Ok((_, res)) => Ok(res),
         Err(_) => {
                 eprintln!("Failed to parse input: {}", input);
