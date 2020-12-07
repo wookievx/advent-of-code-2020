@@ -69,5 +69,16 @@ fn day_1_5() {
 fn day_6_10() {
     let day_6_contents = utils::files::resource_contents("resources/day6/input.txt");
     let input = Input::new(day_6_contents);
-    input.perform_solution(day6_10::day6::parse_input, day6_10::day6::solve_simple, |i| 0, "day 6");
+    input.perform_solution(day6_10::day6::parse_input, day6_10::day6::solve_simple, |_| 0, "day 6");
+
+    let day_7_contents = utils::files::resource_contents("resources/day7/input.txt");
+    let day_7_input = Input::new(day_7_contents.as_str());
+    fn solve_simple(arg: &day6_10::day7::BagSpecs) -> u32 {
+        day6_10::day7::solve_simple(arg, "shiny gold")
+    }
+    fn solve_advanced(arg: &day6_10::day7::BagSpecs) -> u32 {
+        day6_10::day7::solve_advanced(arg, "shiny gold")
+    }
+
+    day_7_input.perform_solution(day6_10::day7::parse_all_bags_specs, solve_simple, solve_advanced, "day 7");
 }

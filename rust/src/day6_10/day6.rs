@@ -21,7 +21,9 @@ pub fn solve_simple(input: &Vec<GroupInput>) -> usize {
             .fold(HashSet::<char>::new(), |acc, n|
                 acc.union(n).cloned().collect())
     }).collect();
-    prepared.iter().fold(0 as usize, |acc, next| acc + next.len())
+    prepared.iter().fold(0 as usize, |acc, next| {
+        acc + next.len()
+    })
 }
 
 pub fn parse_input(input: String) -> Result<Vec<GroupInput>, ()> {
@@ -58,25 +60,11 @@ fn parse_single_group(group_str: &str) -> GroupInput {
 
 #[cfg(test)]
 mod tests {
-    use crate::day6_10::day6::{parse_input, GroupInput};
+    use crate::day6_10::day6::{parse_input, GroupInput, solve_simple};
 
     #[test]
     fn check_parsing() {
-        let input = "abc\n\
-                          \n\
-                          a\n\
-                          b\n\
-                          c\n\
-                          \n\
-                          ab\n\
-                          ac\n\
-                          \n\
-                          a\n\
-                          a\n\
-                          a\n\
-                          a\n\
-                          \n\
-                          b";
+        let input = default_input().to_string();
         let parse_res = parse_input(input);
 
         let expected = vec![
@@ -88,5 +76,31 @@ mod tests {
         ];
 
         assert_eq!(parse_res, Ok(expected));
+    }
+
+    #[test]
+    fn check_result() {
+        let input = default_input().to_string();
+        let parse_result = parse_input(input);
+        let res = parse_result.map(|p| solve_simple(&p));
+        assert_eq!(res, Ok(11))
+    }
+
+    fn default_input() -> &'static str {
+        "abc\n\
+        \n\
+        a\n\
+        b\n\
+        c\n\
+        \n\
+        ab\n\
+        ac\n\
+        \n\
+        a\n\
+        a\n\
+        a\n\
+        a\n\
+        \n\
+        b"
     }
 }
