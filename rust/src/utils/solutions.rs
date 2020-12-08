@@ -1,5 +1,5 @@
 use std::fmt;
-use nom::lib::std::fmt::Display;
+use nom::lib::std::fmt::Debug;
 
 pub struct Input<T>(T);
 
@@ -15,14 +15,14 @@ impl <RI: Clone> Input<RI> {
         F2: Fn(&I) -> R1,
         F3: Fn(&I) -> R2,
         E: fmt::Debug,
-        R1: Display,
-        R2: Display
+        R1: Debug,
+        R2: Debug,
     {
         let parsed = parse_input(self.0.clone()).expect(format!("Failed to parse input: {}", name).as_str());
         let res_one = solve_one(&parsed);
-        println!("Result of {name}: {res}", name = name, res = res_one);
+        println!("Result of {name}: {res:?}", name = name, res = res_one);
         let res_two = solve_two(&parsed);
-        println!("Result of {name} (day 2): {res}", name = name, res = res_two);
+        println!("Result of {name} (day 2): {res:?}", name = name, res = res_two);
     }
 }
 
