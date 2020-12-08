@@ -84,5 +84,10 @@ fn day_6_10() {
 
     let day_8_contents = utils::files::lines_from_file("resources/day8/input.txt");
     let day_8_input = Input::new(day_8_contents);
-    day_8_input.perform_solution(day6_10::day8::parse_input, |arg| day6_10::day8::solve_simple(arg), |_| "d2a", "day 8");
+    day_8_input.perform_solution(
+        day6_10::day8::parse_input,
+        day6_10::day8::solve_simple,
+        day6_10::day8::solve_advanced,
+        "day 8"
+    );
 }

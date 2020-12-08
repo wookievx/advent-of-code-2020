@@ -30,7 +30,7 @@ pub fn parse_input(arg: Vec<String>) -> Result<Vec<Command>, ()> {
     })
 }
 
-pub fn solve_simple<'a>(arg: &'a Vec<Command>) -> (&'a [Command], i32) {
+pub fn solve_simple(arg: &Vec<Command>) -> ([Command; 3], i32) {
     let mut visited: Vec<bool> = vec![false; arg.len()];
     let mut position: usize = 0;
     let mut program_state: i32 = 0;
@@ -44,8 +44,51 @@ pub fn solve_simple<'a>(arg: &'a Vec<Command>) -> (&'a [Command], i32) {
     }
     let min_pos = max(0, position - 1);
     let max_pos = min(arg.len(), position + 1);
-    (&arg[min_pos..max_pos], program_state)
+    let res = [arg[min_pos], arg[min_pos + 1], arg[max_pos]];
+    (res, program_state)
 }
+
+pub fn solve_advanced(arg: & Vec<Command>) -> ([Command; 3], i32) {
+
+    fn check_termination(arg: &Vec<Command>) -> Option<([Command; 3], i32)> {
+        let mut visited: Vec<bool> = vec![false; arg.len()];
+        let mut position: usize = 0;
+        let mut program_state: i32 = 0;
+        loop {
+            visited[position] = true;
+            let (new_position, new_state) = next_position_and_state(arg, position, program_state);
+            position = new_position;
+            program_state = new_state;
+            if position >= arg.len() {
+                let res = [arg[arg.len() - 3], arg[arg.len() - 2], arg[arg.len() - 1]];
+                return Some((res, program_state))
+            } else if visited[position] {
+                return None
+            }
+        }
+    }
+
+    let mut mutable_copy: Vec<Command> = arg.clone();
+
+    arg.iter().enumerate().find_map(|(ind, c)| {
+        match c {
+            Command::Nop { offset} => {
+                mutable_copy[ind] = Command::jmp(*offset);
+                let res = check_termination(&mutable_copy);
+                mutable_copy[ind] = Command::nop(*offset);
+                res
+            },
+            Command::Jmp { offset } => {
+                mutable_copy[ind] = Command::nop(*offset);
+                let res = check_termination(&mutable_copy);
+                mutable_copy[ind] = Command::jmp(*offset);
+                res
+            },
+            _ => None
+        }
+    }).unwrap()
+}
+
 
 fn next_position_and_state(arg: &Vec<Command>, position: usize, state: i32) -> (usize, i32) {
     match arg[position] {
@@ -154,9 +197,19 @@ fn parse_command(input: &str) -> IResult<&str, Command> {
 
 #[cfg(test)]
 mod tests {
-    use crate::day6_10::day8::{parse_input, Command, solve_simple, RenderedCommands};
+    use crate::day6_10::day8::{parse_input, Command, solve_simple, RenderedCommands, solve_advanced};
 
     const INPUT: &str = "nop +0
+acc +1
+jmp +4
+acc +3
+jmp -3
+acc -99
+acc +1
+jmp -4
+acc +6";
+
+    const INPUT_2: &str = "nop +0
 acc +1
 jmp +4
 acc +3
@@ -190,15 +243,31 @@ acc +6";
     fn it_should_solve_simple() {
         let input = parse_input(INPUT.lines().map(|s| s.to_string()).collect()).expect("Failed to parse input");
         let (commands, result) = solve_simple(&input);
-        println!("Got results:\n{}Got state: {}", RenderedCommands(commands), result);
+        println!("Got results:\n{}Got state: {}", RenderedCommands(&commands), result);
         assert_eq!(
             commands,
-            &input[0..2]
+            &input[0..3]
         );
         assert_eq!(
             result,
             5
         )
+    }
+
+    #[test]
+    fn it_should_solve_advanced() {
+        let input = parse_input(INPUT_2.lines().map(|s| s.to_string()).collect()).expect("Failed to parse input");
+        let (commands, result) = solve_advanced(&input);
+        println!("Got results:\n{}Got state: {}", RenderedCommands(&commands), result);
+        let expected= [input[6], Command::nop(-4), input[8]];
+        assert_eq!(
+            commands,
+            expected
+        );
+        assert_eq!(
+            result,
+            8
+        );
     }
 
 }

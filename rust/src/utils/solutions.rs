@@ -22,7 +22,7 @@ impl <RI: Clone> Input<RI> {
         let res_one = solve_one(&parsed);
         println!("Result of {name}: {res:?}", name = name, res = res_one);
         let res_two = solve_two(&parsed);
-        println!("Result of {name} (day 2): {res:?}", name = name, res = res_two);
+        println!("Result of {name} (part 2): {res:?}", name = name, res = res_two);
     }
 }
 
