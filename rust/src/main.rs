@@ -90,4 +90,13 @@ fn day_6_10() {
         day6_10::day8::solve_advanced,
         "day 8"
     );
+
+    let day_9_contents = utils::files::lines_from_file("resources/day9/input.txt");
+    let day_9_input = Input::new(day_9_contents);
+    day_9_input.perform_solution(
+        day6_10::day9::parse_input,
+        |ipt| day6_10::day9::solve_simple(ipt, 25),
+        |ipt| day6_10::day9::solve_advanced(ipt, 25),
+        "day 9"
+    );
 }
