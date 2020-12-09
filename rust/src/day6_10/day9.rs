@@ -189,6 +189,29 @@ pub fn solve_advanced(input: &Vec<u64>, grouping: usize) -> (u64, u64, u64) {
     (*min, *max, min + max)
 }
 
+pub fn brute_force_advanced(input: &Vec<u64>, grouping: usize) -> (u64, u64, u64) {
+    let target = solve_simple(input, grouping);
+    let mut sums = vec![0 as u64; input.len() + 1];
+    let mut last_sum: u64 = 0;
+    sums[0] = 0;
+    for i in 0..input.len() {
+        last_sum += input[i];
+        sums[i + 1] = last_sum;
+    }
+
+    for i in 0..sums.len() {
+        for j in (i+1)..sums.len() {
+            if sums[j] - sums[i] == target {
+                let slice = &input[i..j];
+                let min = slice.iter().min().unwrap();
+                let max = slice.iter().max().unwrap();
+                return (*min, *max, min + max)
+            }
+        }
+    }
+    panic!("WTF did not end")
+}
+
 #[cfg(test)]
 mod tests {
     use crate::day6_10::day9::{parse_input, solve_simple, solve_advanced};

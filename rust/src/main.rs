@@ -96,7 +96,7 @@ fn day_6_10() {
     day_9_input.perform_solution(
         day6_10::day9::parse_input,
         |ipt| day6_10::day9::solve_simple(ipt, 25),
-        |ipt| day6_10::day9::solve_advanced(ipt, 25),
+        |ipt| day6_10::day9::brute_force_advanced(ipt, 25),
         "day 9"
     );
 }
