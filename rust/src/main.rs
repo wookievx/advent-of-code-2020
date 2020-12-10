@@ -96,7 +96,16 @@ fn day_6_10() {
     day_9_input.perform_solution(
         day6_10::day9::parse_input,
         |ipt| day6_10::day9::solve_simple(ipt, 25),
-        |ipt| day6_10::day9::brute_force_advanced(ipt, 25),
+        |ipt| day6_10::day9::solve_advanced(ipt, 25),
         "day 9"
+    );
+
+    let day_10_contents = utils::files::lines_from_file("resources/day10/input.txt");
+    let day_10_input = Input::new(day_10_contents);
+    day_10_input.perform_solution(
+        day6_10::day_10::parse_input,
+        day6_10::day_10::solve_simple,
+        day6_10::day_10::solve_advanced,
+        "day 10"
     );
 }

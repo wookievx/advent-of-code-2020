@@ -170,17 +170,13 @@ pub fn solve_advanced(input: &Vec<u64>, grouping: usize) -> (u64, u64, u64) {
         .iter()
         .enumerate()
         .find_map(|(start_ind, &v)| {
-            if v > target {
-                None
-            } else {
-                let search = target + v;
-                let res: Option<(usize, usize)> =
-                    sums[(start_ind+1)..]
-                        .binary_search(&search)
-                        .map(|end_ind| (start_ind, start_ind + end_ind + 1))
-                        .ok();
-                res
-            }
+            let search = target + v;
+            let res: Option<(usize, usize)> =
+                sums[(start_ind+1)..]
+                    .binary_search(&search)
+                    .map(|end_ind| (start_ind, start_ind + end_ind + 1))
+                    .ok();
+            res
         })
         .unwrap();
 
@@ -205,6 +201,7 @@ pub fn brute_force_advanced(input: &Vec<u64>, grouping: usize) -> (u64, u64, u64
                 let slice = &input[i..j];
                 let min = slice.iter().min().unwrap();
                 let max = slice.iter().max().unwrap();
+                println!("Number which we are summing from is: {}, index: {}", input[i], i);
                 return (*min, *max, min + max)
             }
         }
